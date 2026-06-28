@@ -1,0 +1,27 @@
+# Environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+!.env.example
+
+# Data (never commit raw or output data)
+data/raw/*
+!data/raw/.gitkeep
+data/output/*
+!data/output/.gitkeep
+
+# Node
+node_modules/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
