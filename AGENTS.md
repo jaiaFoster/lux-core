@@ -576,7 +576,7 @@ Pre-Ingestion Source Rule:
 | SILD-001 | Codex/Kyle | OPEN (found 2026-07-25) | Clerk legal-description parse defect: the literal string `SILD` is stored as the legal_description on 23 unresolved transactions — a corrupted/placeholder value (likely a mangled 'SUBD'). These 23 can never link until the parser is fixed | Found during DATA-012 triage; ingestion-parse fix in the Hillsborough clerk parser; low effort, unblocks 23 tx |
 | DATA-012 | Codex/Claude | TRIAGE DONE / NORMALIZER FIX LANDED 2026-07-25 | Legal-description mismatch triage over the 259 strong no-match descriptions (434 unresolved tx). Result: **88% (229) are missing-parcel coverage, not a normalizer bug** — the DATA-006I3 order-invariant rewrite already cleared the ordering class. Only ~13 have the parcel present; of those 1 already matches (Carriage Park) and ~1 recovered by this fix (Bay Port Colony). Fix: single-letter B/L expansion no longer produces spurious BLOCKBLOCK/BLOCKLOT on doubled/hyphenated identifiers (II-B, B B). 4 regression tests, 401 suite green. See docs/audits/DATA_012_LEGAL_DESC_TRIAGE.md | Conclusion: coverage is the lever -> proceed to DATA-006L (pressure-weighted per INTEL-004). Remaining un-actioned: SILD placeholder legal on 23 tx (new ingest-parse ticket); roman-numeral phase + #N-unit deliberately NOT forced (overlap partial-lot cases that must stay unresolved) |
 | INTEL-004 | Codex/Kyle | OPEN / BLOCKED-BY DATA-011 (assessed 2026-07-25) | Pressure-weighted parcel coverage targeting: order parcel ingestion toward subdivisions/ZIPs where INTEL-001 seller-pressure concentrates | **Not yet actionable:** 0 of 434 unresolved tx have an ELEVATED+ pressure participant (only 3 have any pressure score), transactions.seller_id is 100% null (DATA-011), and pressure signals sit on participant subjects (owner names) not parcels. Pressure-weighting today would be fabricated. Unblock: DATA-011 seller capture + ownership→asset links. Interim DATA-006L ordering is yield-based (unresolved tx per subdivision). Evidence: docs/audits/DATA_006L_CAMPAIGN_RUNBOOK.md |
-| OPS-AUTO-002 | Codex/Claude | v1 SHIPPED 2026-07-25 | Automated parcel->linker->commit coverage loop as a dry-run-gated recurring job | `.github/workflows/ops-auto-002-coverage-loop.yml`: self-contained scheduled workflow (weekly Mon 07:00 UTC) chaining diagnostics -> parcel dry-run -> (gated) parcel WRITE -> linker dry-run -> (gated) bounded reviewed DATA-006K commit (candidate_limit 2/pair, immutable reviewed artifact) -> graph audit + coverage summary. Three modes report/ingest/commit resolved by `scripts/ops_auto_002_mode.py` (9 unit tests). **Fail-safe: scheduled mode = repo var OPS_AUTO_002_SCHEDULE_MODE, unset => report-only, so the merge starts NO unattended writes.** Enable coverage growth by setting that variable to `ingest` (or `commit`), or manual-dispatch with an explicit mode. Honors the approval invariant: link writes only in `commit` mode. Full suite 410 green |
+| OPS-AUTO-002 | Codex/Claude | v1 SHIPPED + FULL-AUTO 2026-07-25 | Automated parcel->linker->commit coverage loop, fully unattended | `.github/workflows/ops-auto-002-coverage-loop.yml`: weekly (Mon 07:00 UTC) self-contained loop diagnostics -> parcel dry-run -> parcel WRITE -> linker dry-run -> bounded reviewed DATA-006K link commit -> graph audit -> **Phase 6 safety abort** on any invalid FK/conflict. **Schedule runs mode=commit fully unattended (owner-authorized, see Approved Operational Policy exception); no variable or click needed.** Repo var `OPS_AUTO_002_SCHEDULE_MODE` is an optional kill-switch (report/ingest). Modes resolved by `scripts/ops_auto_002_mode.py` (10 unit tests). Deterministic-only, bounded (candidate_limit 2/pair, commit_max_pairs cap), rollback-logged. Manual dispatch still defaults to safe report |
 | LEADGEN-002 | Fox/Kyle | OPEN | Run the leadgen + outreach production migration (Alembic head d7f3a9b1c2e4: lead_*/trace + outreach_drafts) via the manual migration Action; verify production schema head | FIRST go-live step; unblocks every contact/outreach action. Tables are additive; existing tables untouched |
 | LEADGEN-003 | Jaia | OPEN | Record the lawful-use attestation (ComplianceSettingsModel via /api/compliance/attest) confirming lawful, non-FCRA use | Skip-trace is hard-blocked until attested (trace jobs cannot enqueue). Requires LEADGEN-002 |
 | LEADGEN-004 | Kyle | OPEN | Provision BatchData (skip-trace) + DNC.com (scrub) accounts; add BATCHDATA_API_KEY, DNC_API_KEY, and the DNC SAN number to Vercel env | Providers fall back to safe mocks until keys present; the DNC.com adapter refuses to instantiate without DNC_API_KEY (fail-safe). Legal/vendor terms reviewed here |
@@ -975,9 +975,21 @@ additional approval, provided Jaia has merged the OPS-AUTO-001 branch:
 - Evidence audits (`audit_asset_link_evidence.py`)
 - Transaction-to-Asset linker **dry-runs**
 
+**Authorized exception — OPS-AUTO-002 (Tim/Fox, 2026-07-25):** the OPS-AUTO-002
+scheduled coverage loop MAY automatically commit deterministic transaction→Asset
+links each week with no per-run human approval. This is sanctioned because every
+such write is deterministic-only (exact, unique folio/PIN/STRAP/legal match — no
+fuzzy/name/price/date), bounded (candidate_limit 2/pair, commit_max_pairs cap),
+backed by an in-job immutable reviewed candidate artifact (DATA-006K1),
+rollback-logged, and hard-aborted on any invalid Asset FK or link conflict.
+Kill-switch/throttle: set repo variable `OPS_AUTO_002_SCHEDULE_MODE` to `report`
+(pause all writes) or `ingest` (pause link writes). Jaia to be kept informed.
+This is the ONLY sanctioned automatic linker write; the rule below still applies
+to every other linker/scoring/matching write.
+
 Codex must never automatically trigger:
 
-- Linker **write mode** (transaction.asset_id updates) — requires Jaia's explicit approval
+- Linker **write mode** (transaction.asset_id updates) — requires Jaia's explicit approval, EXCEPT the OPS-AUTO-002 loop above
 - Scoring or matching writes
 - Outreach, contact enrichment, skip-tracing
 - Destructive DB operations, production cleanup
