@@ -1,0 +1,61 @@
+# OPEN_DECISIONS.yaml
+#
+# Structured, machine-readable list of decisions that need Jaia (or another
+# named owner) to make — derived from AGENTS.md's "Discovered / Unscoped"
+# table plus any other explicitly-flagged open questions in the registry.
+# This file exists so an AI assistant or executive can see, at a glance,
+# what's blocked on a human decision without reading the full Ticket
+# Registry.
+
+schema_version: 1
+last_updated_utc: "2026-07-25T00:00:00Z"
+
+decisions:
+  - id: "VACANCY-001"
+    proposed_by: "SPRINT-001 / WP3 + WP5 research"
+    question: "Should LUX ingest HUD's free USPS address-vacancy dataset as a new seller-pressure signal?"
+    evidence: "Free, quarterly, tract-level, no source-probe friction; independently surfaced by two separate research passes as the highest-value not-yet-built signal."
+    decision_needed: "Scope as a ticket and prioritize, or decline."
+    status: "awaiting decision"
+
+  - id: "HEIR-001"
+    proposed_by: "SPRINT-001 / WP3 research"
+    question: "Should LUX build a heir/inherited-property signal, paired with the existing DATA-006P probate ingestion ticket?"
+    evidence: "Best-evidenced new signal researched (Fannie Mae/HAC national study, Urban Institute, NAR-backed UPHPA partition-action mechanism)."
+    decision_needed: "Approve scoping alongside DATA-006P, or decline/defer."
+    status: "awaiting decision"
+
+  - id: "jurisdiction_code-core-change"
+    proposed_by: "SPRINT-001 / WP4 architecture review"
+    question: >
+      Should core/models/entities.py and core/db/models.py generalize
+      source_county into a structured jurisdiction_code, and add
+      jurisdiction scoping to PipelineRun/RawEvidence/SourceRecord?
+    evidence: "Needed for Maricopa/Rensselaer adapters to cleanly extend the shared linker rather than special-case it; flagged as a core/ change requiring explicit sign-off per AGENTS.md's 'if expansion work starts touching core/, stop and get sign-off' rule."
+    decision_needed: "Approve a formal ADR process for this change, or decline."
+    status: "awaiting decision — not implemented"
+
+  - id: "notion-roadmap-sync"
+    proposed_by: "historical (pre-dates SPRINT-001)"
+    question: "Should the AGENTS.md Ticket Registry sync to Notion, or remain manual?"
+    decision_needed: "Pick a sync strategy."
+    status: "awaiting decision"
+
+  - id: "ENRICH-001"
+    proposed_by: "historical (pre-dates SPRINT-001)"
+    question: "What contact-enrichment strategy (public/free, paid providers, waterfall, internal skip tracing) should LUX commit to?"
+    evidence: "Contact enrichment is described in AGENTS.md as 'a major commercial bottleneck.'"
+    decision_needed: "Decision matrix + selection."
+    status: "awaiting decision"
+
+  - id: "OPS-SYNC-001-destination-reset"
+    proposed_by: "OPS-SYNC-001 ticket"
+    question: >
+      Confirm before the initial reset of jaiaFoster/lux-core (an abandoned
+      June-2026 project scaffold, 2 commits, 61 files) — replacing its
+      tracked content with the mirrored project-state artifact set via a
+      normal (non-force) commit.
+    decision_needed: "Explicit go-ahead before the destructive reset commit runs."
+    status: "awaiting explicit confirmation in chat"
+
+full_detail: "See AGENTS.md 'Discovered / Unscoped' table in the source repository for the complete, authoritative list, including items not yet promoted to this structured file."

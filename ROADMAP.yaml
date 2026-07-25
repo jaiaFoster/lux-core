@@ -1,0 +1,101 @@
+# ROADMAP.yaml
+#
+# Structured, machine-readable roadmap derived from AGENTS.md's Ticket
+# Registry, Expansion Strategy, and Buyer Validation Strategy sections.
+# AGENTS.md remains the living source of truth; this file is a derived
+# summary for AI/executive consumption, regenerated whenever the registry
+# changes materially.
+
+schema_version: 1
+last_updated_utc: "2026-07-25T00:00:00Z"
+
+north_star: "Build a durable, reusable data engine before implementing intelligence."
+
+strategic_objective:
+  id: "MVP-001"
+  name: "First Dollar"
+  definition: "Close one real wholesale transaction entirely sourced and matched through LUX."
+
+path_to_first_dollar:
+  - step: 1
+    name: "Expand geographic coverage"
+    status: "in progress"
+  - step: 2
+    name: "Build richer buyer histories"
+    status: "in progress"
+  - step: 3
+    name: "Build seller intelligence (INTEL-001)"
+    status: "live"
+  - step: 4
+    name: "Build buyer intelligence (INTEL-002)"
+    status: "live"
+  - step: 5
+    name: "Generate buyer<->seller matches (DATA-009 + MATCH-001)"
+    status: "live"
+  - step: 6
+    name: "Human review (OUTREACH-001 approval queue)"
+    status: "live"
+    shipped: "2026-07-22"
+  - step: 7
+    name: "Skip trace highest-confidence matches (OUTREACH-003)"
+    status: "not yet live"
+    blocked_by: ["LEADGEN-002", "LEADGEN-003", "LEADGEN-004", "LEADGEN-005"]
+  - step: 8
+    name: "Contact both parties"
+    status: "not started"
+    depends_on: "step 7"
+  - step: 9
+    name: "Complete the first wholesale transaction (MVP-001)"
+    status: "not started"
+
+expansion_strategy:
+  florida:
+    status: "continue expanding"
+    proven: "Hillsborough County (end to end: ingestion -> provenance -> canonical storage -> linking -> intelligence -> matching -> outreach)"
+    next_counties_ranked:
+      # Per SPRINT-001 / docs/research/market-ranking.md
+      - rank: 1
+        county: "Pinellas County, FL"
+        note: "already in progress under INGEST-002"
+      - rank: 2
+        county: "Orange County, FL"
+      - rank: 3
+        county: "Pasco County, FL"
+      - rank: 4
+        county: "Duval County, FL"
+    blocking_ticket: "FL-ADAPTER-001"
+  phoenix_arizona:
+    county: "Maricopa County, AZ"
+    purpose: "first out-of-state architecture-validation target"
+    status: "planned, no ingestion/adapter work started"
+    confirmed_by: "SPRINT-001 market ranking — keep unmodified"
+  troy_new_york:
+    county: "Rensselaer County, NY"
+    purpose: "second out-of-state architecture-validation target"
+    status: "planned, no ingestion/adapter work started"
+    risk_note: >
+      SPRINT-001 found population declining since 2020 (-1,317 residents
+      2021-2023) and the weakest data access (permits, probate) of any
+      market researched. Recommendation: keep, but explicitly as a
+      non-revenue architecture-validation bet, not a market-opportunity one
+      — consistent with how AGENTS.md already frames it.
+  deprioritized_candidates:
+    - name: "Austin (Travis County, TX)"
+      reason: "non-disclosure state — sale price isn't public record, breaks LUX's evidence-based deterministic model"
+    - name: "Salt Lake County, UT"
+      reason: "same non-disclosure-state issue"
+
+ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
+
+current_priority: "OUTREACH-001"
+
+next_up:
+  - "OUTREACH-002 — Response capture after OUTREACH-001"
+  - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
+  - "VAL-001 — Valuation once Asset price context deepens"
+
+recently_proposed_not_yet_approved:
+  # Discovered/Unscoped items from SPRINT-001, pending Jaia's decision
+  - "VACANCY-001 — HUD USPS vacancy data ingestion"
+  - "HEIR-001 — heir/inherited property signal (pair with DATA-006P)"
+  - "jurisdiction_code core/ schema change — needs formal ADR + sign-off before Maricopa/Rensselaer adapter work"

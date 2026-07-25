@@ -1,0 +1,102 @@
+# PROJECT_STATE.yaml
+#
+# Canonical, machine-readable snapshot of LUX's current engineering state.
+# Source of truth for this file's content is AGENTS.md (the Ticket Registry
+# and "Current Project Status" section) — this file is a structured
+# derivative for AI/executive consumption, not a second source of truth.
+# Update this file whenever AGENTS.md's "Current Project Status" section
+# changes.
+
+schema_version: 1
+last_updated_utc: "2026-07-25T00:00:00Z"
+last_updated_by: "OPS-SYNC-001 initial population"
+
+project:
+  name: "LUX"
+  full_name: "Linked Unified Exchange"
+  description: >
+    Market-intelligence platform that discovers, scores, and matches
+    participants in fragmented markets. Adapter #1 (validation vertical) is
+    residential real estate wholesale deals, Tampa Bay FL (Hillsborough
+    County). Core is intentionally market-agnostic.
+  repository: "fsassaman-commits/lux-core"
+
+current_phase: "Derived Intelligence Live — Outreach Next"
+
+current_milestone:
+  name: "MVP-001 — First Dollar"
+  definition: >
+    Generate one successful wholesale transaction entirely through LUX
+    intelligence: identify a motivated seller from canonical public
+    evidence, identify a compatible buyer from buyer intelligence, and close
+    that match into an actual completed deal. A qualified lead and an
+    approved outreach packet are necessary steps, not the milestone itself.
+  status: "in progress"
+  blocking_path:
+    - "LEADGEN-002 (run production migration)"
+    - "LEADGEN-003 (lawful-use attestation)"
+    - "LEADGEN-004 (provider keys: BatchData, DNC.com)"
+    - "LEADGEN-005 (activate live providers, first bounded live skip-trace batch)"
+    - "OUTREACH-003 (opportunity->lead skip-trace loop into approval queue)"
+
+infrastructure_status: "complete"
+infrastructure_summary: >
+  Canonical data model, public-record ingestion, immutable provenance
+  pipeline, deterministic normalization, targeted parcel enrichment,
+  deterministic Transaction->Asset linking, and read-only computed graph
+  queries (GRAPH-001) are all live in production. Engineering priority has
+  shifted from building ingestion infrastructure to improving derived
+  intelligence and closing the loop to a real transaction.
+
+intelligence_status: "v1 live"
+intelligence_summary: >
+  INTEL-001 (seller pressure) and INTEL-002 (buyer demand) v1 are live,
+  scoring canonical evidence into explainable, versioned projections.
+  DATA-009 reconnected /api/opportunities and /api/matches to those
+  projections. MATCH-001 persists ranked candidate matches with outcome
+  tracking. OUTREACH-001 v1 ships human-reviewed, compliance-gated outreach
+  drafts, currently running against mock contact providers pending Lead
+  Engine go-live.
+
+production_snapshot:
+  as_of: "2026-07-18"
+  note: "See AGENTS.md 'Current Project Status' for the authoritative, most recent snapshot — this block is illustrative of the schema, not guaranteed current."
+  transactions_total: 223
+  transactions_with_asset: 8
+  asset_link_coverage_percent: 3.59
+  invalid_asset_fk: 0
+  seller_pressure_scores: 1397
+  seller_pressure_critical: 1
+  seller_pressure_high: 13
+  buyer_demand_scores: 226
+  buyer_demand_active: 13
+  persisted_matches: 200
+  schema_head: "matches table (a1c4e9d27b31)"
+
+completed_infrastructure_tickets:
+  - "ARCH-001 — Canonical Domain Model Consolidation"
+  - "DATA-002 — Schema Migration Foundation + Production Migration"
+  - "DATA-003 — First Production Hillsborough Ingestion"
+  - "DATA-006E — Hillsborough Public Parcel/HCPA Ingestion"
+  - "DATA-006I — Production Deterministic Linker"
+  - "DATA-006K / DATA-006K1 — Deterministic Link Commit Safety Framework"
+  - "GRAPH-001 — Property Graph v1"
+  - "UI-002 / OPS-002 — Operations & Market Graph Dashboard Rebuild"
+
+completed_intelligence_tickets:
+  - "INTEL-001 — Seller Pressure / Transaction Readiness Engine v1"
+  - "INTEL-002 — Buyer Intelligence Engine v1"
+  - "DATA-009 — Scoring/Matching Reconnection v1"
+  - "MATCH-001 — Ranked Counterparty Matching Hardening"
+  - "LEADGEN-001 — Skip Tracing & Lead Management (runs on mocks until go-live)"
+
+current_priority_ticket: "OUTREACH-001"
+current_priority_status: "IN PROGRESS / v1 SHIPPED 2026-07-22"
+
+known_constraints:
+  - "Jaia merges all PRs — no self-merge, by any agent, ever."
+  - "Codex/coding agents may run bounded dry-runs and evidence audits without additional approval; linker write mode, scoring/matching writes, outreach/contact actions, and destructive DB operations all require Jaia's explicit approval."
+  - "Core never imports from adapters/; adapters import Core schemas only."
+  - "Unresolved is preferable to false resolution — no fuzzy matching, no guessed Asset links."
+
+full_detail: "See AGENTS.md in the source repository for the complete, authoritative Ticket Registry, architecture rules, and operational policy."
